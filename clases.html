@@ -77,6 +77,10 @@
     .wbtn.verde{background:var(--verde);color:#fff;border-color:var(--verde)}
     .filtros-wrap{display:flex;gap:8px;margin-bottom:10px}
     .filtros-wrap > div{flex:1}
+    .nuevo-inline{display:flex;gap:6px;align-items:center;margin:-4px 0 8px;animation:fadeIn .15s ease}
+    .nuevo-inline .finp{flex:1}
+    .nuevo-inline .sbtn{padding:9px 12px;min-width:0;flex-shrink:0}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
@@ -133,9 +137,21 @@
             <button class="estado-btn" onclick="selEstado(this,'Festivo')"><img src="icons/festivo.png">Festivo</button>
           </div>
         </div>
-        <div class="fgrp">
-          <div class="flbl">Grupo *</div>
-          <select class="fsel" id="cl-grupo"><option value="">Seleccionar grupo…</option></select>
+        <div class="frow">
+          <div class="fgrp">
+            <div class="flbl">Tipo de clase</div>
+            <select class="fsel" id="cl-tipo" onchange="onSelectNuevoTipo(this)"></select>
+          </div>
+          <div class="fgrp">
+            <div class="flbl">Grupo</div>
+            <select class="fsel" id="cl-grupo"><option value="">— Sin grupo —</option></select>
+          </div>
+        </div>
+        <div class="nuevo-inline" id="nuevo-tipo-wrap" style="display:none">
+          <input class="finp" id="nuevo-tipo-inp" placeholder="Ej: Clase-partido"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();confirmarNuevoTipo();}">
+          <button class="sbtn prim" type="button" onclick="confirmarNuevoTipo()">✓</button>
+          <button class="sbtn" type="button" onclick="cancelarNuevoTipo()">✕</button>
         </div>
         <div class="frow">
           <div class="fgrp">
@@ -192,31 +208,15 @@
       <div id="fase-3" style="display:none">
         <div class="wizard-hdr">
           <div class="wizard-titulo">Estructura</div>
-          <div class="wizard-sub">Elige cómo generar los ejercicios</div>
+          <div class="wizard-sub">Ajusta las cantidades — se sugerirán los ejercicios menos usados</div>
         </div>
         <div style="padding:0 15px">
-          <div class="modo-btns">
-            <button class="modo-btn active" id="btn-simple" onclick="setModo('simple')">⚡ Simple</button>
-            <button class="modo-btn" id="btn-inteligente" onclick="setModo('inteligente')">🤖 Inteligente</button>
-          </div>
-          <div id="modo-simple">
-            <div class="estr-box">
-              <div class="estr-lbl">Ajusta las cantidades:</div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/calentamiento.png">Calentamiento</div><div class="counter"><button onclick="adj('cal',-1)">−</button><span id="n-cal">1</span><button onclick="adj('cal',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/carritos.png">Carritos</div><div class="counter"><button onclick="adj('car',-1)">−</button><span id="n-car">3</span><button onclick="adj('car',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/situaciones.png">Situaciones</div><div class="counter"><button onclick="adj('sit',-1)">−</button><span id="n-sit">2</span><button onclick="adj('sit',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/partiditos.png">Partiditos</div><div class="counter"><button onclick="adj('par',-1)">−</button><span id="n-par">1</span><button onclick="adj('par',1)">+</button></div></div>
-            </div>
-          </div>
-          <div id="modo-inteligente" style="display:none">
-            <div class="estr-box">
-              <div class="estr-lbl">Sugerencia por ejercicios menos usados:</div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/calentamiento.png">Calentamiento</div><div class="counter"><button onclick="adj('ical',-1)">−</button><span id="n-ical">1</span><button onclick="adj('ical',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/carritos.png">Carritos</div><div class="counter"><button onclick="adj('icar',-1)">−</button><span id="n-icar">2</span><button onclick="adj('icar',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/situaciones.png">Situaciones</div><div class="counter"><button onclick="adj('isit',-1)">−</button><span id="n-isit">3</span><button onclick="adj('isit',1)">+</button></div></div>
-              <div class="estr-row"><div class="estr-nom"><img src="icons/partiditos.png">Partiditos</div><div class="counter"><button onclick="adj('ipar',-1)">−</button><span id="n-ipar">1</span><button onclick="adj('ipar',1)">+</button></div></div>
-            </div>
-            <button class="btn-generar" onclick="generarSugerencia()">🔄 Generar otra sugerencia</button>
+          <div class="estr-box">
+            <div class="estr-lbl">Bloques por categoría:</div>
+            <div class="estr-row"><div class="estr-nom"><img src="icons/calentamiento.png">Calentamiento</div><div class="counter"><button onclick="adj('cal',-1)">−</button><span id="n-cal">1</span><button onclick="adj('cal',1)">+</button></div></div>
+            <div class="estr-row"><div class="estr-nom"><img src="icons/carritos.png">Carritos</div><div class="counter"><button onclick="adj('car',-1)">−</button><span id="n-car">3</span><button onclick="adj('car',1)">+</button></div></div>
+            <div class="estr-row"><div class="estr-nom"><img src="icons/situaciones.png">Situaciones</div><div class="counter"><button onclick="adj('sit',-1)">−</button><span id="n-sit">2</span><button onclick="adj('sit',1)">+</button></div></div>
+            <div class="estr-row"><div class="estr-nom"><img src="icons/partiditos.png">Partiditos</div><div class="counter"><button onclick="adj('par',-1)">−</button><span id="n-par">1</span><button onclick="adj('par',1)">+</button></div></div>
           </div>
         </div>
         <div class="wizard-btns">
@@ -233,15 +233,36 @@
         </div>
         <div id="bloques-container" style="padding:0 15px"></div>
         <div class="add-bloques" style="padding:0 15px">
-          <button class="add-blq" onclick="addBloque('Calentamiento')"><img src="icons/calentamiento.png">+ Calentamiento</button>
+          <button class="add-blq" onclick="addBloque('Calentamiento')"><img src="icons/calentamiento.png">+ Calent.</button>
           <button class="add-blq" onclick="addBloque('Carritos')"><img src="icons/carritos.png">+ Carrito</button>
-          <button class="add-blq" onclick="addBloque('Situaciones')"><img src="icons/situaciones.png">+ Situación</button>
-          <button class="add-blq" onclick="addBloque('Partiditos')"><img src="icons/partiditos.png">+ Partidito</button>
+          <button class="add-blq" onclick="addBloque('Situaciones')"><img src="icons/situaciones.png">+ Situac.</button>
+          <button class="add-blq" onclick="addBloque('Partiditos')"><img src="icons/partiditos.png">+ Partit.</button>
         </div>
         <div class="wizard-btns">
           <button class="wbtn" onclick="irFase(3)">← Atrás</button>
           <button class="wbtn verde" onclick="guardar()">💾 Guardar clase</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sheet notificar -->
+  <div class="overlay" id="sh-notif">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">📣 Notificar alumnos</div>
+      <div style="padding:0 15px">
+        <div class="flbl" style="margin-bottom:4px">Mensaje</div>
+        <textarea class="finp" id="notif-msg" rows="4" style="resize:none;line-height:1.5;margin-bottom:10px"></textarea>
+        <div class="flbl">📧 Emails</div>
+        <div id="notif-emails" style="font-size:11px;color:var(--sutil);font-weight:600;margin-bottom:8px;word-break:break-all"></div>
+        <div class="flbl">💬 WhatsApp</div>
+        <div id="notif-wa" style="font-size:11px;color:var(--sutil);font-weight:600;margin-bottom:12px"></div>
+        <div class="sheet-btns">
+          <button class="sbtn" onclick="enviarEmail()">📧 Email</button>
+          <button class="sbtn prim" onclick="enviarWA()">💬 WhatsApp</button>
+        </div>
+        <button class="sbtn" style="width:100%;margin-top:8px" onclick="closeSheet('sh-notif')">Cerrar</button>
       </div>
     </div>
   </div>
@@ -263,7 +284,8 @@
 <script src="js/store.js"></script>
 <script src="js/ui.js"></script>
 <script>
-let _clases=[],_grupos=[],_ejercicios={},_estadoSel='Programada',_modo='simple',_bloques=[],_editId=null;
+let _clases=[],_grupos=[],_ejercicios={},_estadoSel='Programada',_bloques=[],_editId=null;
+let _cfgTiposClase=['Grupo','Particular','Clase-partido','Libre'];
 const ESTADO_COLOR={Programada:'#2563eb',Realizada:'#16a34a',Suspendida:'#e05a5a',Festivo:'#f59e0b'};
 const ESTADO_CHIP={Programada:'caz',Realizada:'cvd',Suspendida:'crd',Festivo:'cam'};
 const ICONO_CAT={Calentamiento:'icons/calentamiento.png',Carritos:'icons/carritos.png',Situaciones:'icons/situaciones.png',Partiditos:'icons/partiditos.png'};
@@ -276,6 +298,37 @@ function buildHoraPickers(){
   document.getElementById('cl-hora-h').innerHTML=horas.map(h=>`<option value="${h}">${h}</option>`).join('');
   document.getElementById('cl-hora-m').innerHTML=mins.map(m=>`<option value="${m}">${m}</option>`).join('');
 }
+function fillTipoClaseSelect(val) {
+  const sel = document.getElementById('cl-tipo');
+  if (!sel) return;
+  const cur = val || sel.value;
+  sel.innerHTML = _cfgTiposClase.map(t=>`<option value="${t}">${t}</option>`).join('') +
+    '<option value="__nuevo__">+ Añadir tipo…</option>';
+  if (cur && cur !== '__nuevo__') sel.value = cur;
+}
+function onSelectNuevoTipo(sel) {
+  if (sel.value !== '__nuevo__') return;
+  sel.value = _cfgTiposClase[0] || 'Grupo';
+  document.getElementById('nuevo-tipo-wrap').style.display = 'flex';
+  document.getElementById('nuevo-tipo-inp').value = '';
+  document.getElementById('nuevo-tipo-inp').focus();
+}
+function confirmarNuevoTipo() {
+  const inp = document.getElementById('nuevo-tipo-inp');
+  const val = inp.value.trim();
+  if (!val) { inp.focus(); return; }
+  if (!_cfgTiposClase.includes(val)) {
+    _cfgTiposClase.push(val);
+    saveConfig('tipos_clase', _cfgTiposClase).catch(console.error);
+  }
+  fillTipoClaseSelect(val);
+  cancelarNuevoTipo();
+  toast('✓ "'+val+'" añadido', 'ok');
+}
+function cancelarNuevoTipo() {
+  document.getElementById('nuevo-tipo-wrap').style.display = 'none';
+}
+
 function getHora(){return document.getElementById('cl-hora-h').value+':'+document.getElementById('cl-hora-m').value}
 function setHora(s){if(!s)return;const[h,m]=s.split(':');document.getElementById('cl-hora-h').value=h?.padStart(2,'0')||'10';document.getElementById('cl-hora-m').value=(m?.slice(0,2)||'00').padStart(2,'0')}
 
@@ -346,6 +399,7 @@ function abrirWizard(){
   document.getElementById('cl-notas').value='';
   document.getElementById('cl-duracion').value='60';
   setHora('10:00');
+  fillTipoClaseSelect('Grupo');
   document.querySelectorAll('.estado-btn').forEach(b=>b.className='estado-btn');
   document.querySelectorAll('.estado-btn')[0].classList.add('sel-Programada');
   document.getElementById('wizard-overlay').classList.add('open');
@@ -358,6 +412,7 @@ function abrirEditar(c){
   document.getElementById('cl-id').value=c.id;
   document.getElementById('cl-fecha').value=c.fecha;
   document.getElementById('cl-grupo').value=c.grupo_id||'';
+  fillTipoClaseSelect(c.tipo_clase||'Grupo');
   document.getElementById('cl-notas').value=c.notas||'';
   document.getElementById('cl-duracion').value=String(c.duracion||60);
   setHora(c.hora||'10:00');
@@ -388,7 +443,6 @@ function irFase(n){
   }else{
     btnSig.textContent='Siguiente →';btnSig.className='wbtn prim';
     btnSig.onclick=()=>{
-      if(!document.getElementById('cl-grupo').value){toast('Selecciona un grupo','warn');return}
       cargarAsistencia();irFase(2);
     };
   }
@@ -498,11 +552,11 @@ function addBloque(cat){
 }
 
 async function guardar(){
-  const grupoId=document.getElementById('cl-grupo').value;
-  if(!grupoId){toast('Selecciona un grupo','warn');return}
+  const grupoId=document.getElementById('cl-grupo').value||null;
   const fecha=document.getElementById('cl-fecha').value;
   if(!fecha){toast('Selecciona una fecha','warn');return}
-  const clase={id:document.getElementById('cl-id').value||undefined,grupo_id:grupoId,fecha,hora:getHora(),estado:_estadoSel,duracion:parseInt(document.getElementById('cl-duracion').value),notas:document.getElementById('cl-notas').value.trim()||null};
+  const tipoClase=document.getElementById('cl-tipo')?.value||'Grupo';
+  const clase={id:document.getElementById('cl-id').value||undefined,grupo_id:grupoId,fecha,hora:getHora(),estado:_estadoSel,tipo_clase:tipoClase,duracion:parseInt(document.getElementById('cl-duracion').value),notas:document.getElementById('cl-notas').value.trim()||null};
   try{
     const saved=await saveClase(clase);const claseId=saved.id;
     if(!ESTADOS_SIMPLES.includes(_estadoSel)){
@@ -532,6 +586,53 @@ function confirmarEliminar(id){
   };
 }
 
+async function notificar(claseId) {
+  const clase = _clases.find(c => c.id === claseId);
+  if (!clase) return;
+  const grupo = _grupos.find(g => g.id === clase.grupo_id);
+  const alumnos = clase.grupo_id ? (await getAlumnos()).filter(a => a.grupo_id === clase.grupo_id) : [];
+  const fecha = formatFecha(clase.fecha);
+  const motivo = clase.notas ? ` Motivo: ${clase.notas}` : '';
+  const msg = encodeURIComponent(`Hola! La clase del ${fecha} ha sido ${clase.estado.toLowerCase()}.${motivo} Disculpa las molestias.`);
+
+  // Emails
+  const emails = alumnos.filter(a => a.email).map(a => a.email);
+  // Teléfonos WhatsApp (solo primero — wa.me no soporta múltiples)
+  const telefonos = alumnos.filter(a => a.telefono).map(a => a.telefono.replace(/\s/g,''));
+
+  if (!emails.length && !telefonos.length) {
+    toast('Sin emails ni teléfonos en el grupo','warn'); return;
+  }
+
+  // Mostrar opciones
+  const opciones = [];
+  if (emails.length) opciones.push(`📧 Email (${emails.length} alumnos)`);
+  if (telefonos.length) opciones.push(`💬 WhatsApp (${telefonos.length} alumnos)`);
+
+  // Abrir sheet de notificación
+  _notifClase = { emails, telefonos, msg };
+  document.getElementById('notif-emails').textContent = emails.length ? emails.join(', ') : '—';
+  document.getElementById('notif-wa').textContent = telefonos.length ? telefonos.join(', ') : '—';
+  document.getElementById('notif-msg').value = decodeURIComponent(msg);
+  openSheet('sh-notif');
+}
+
+let _notifClase = {};
+
+function enviarEmail() {
+  if (!_notifClase.emails?.length) { toast('Sin emails','warn'); return; }
+  const asunto = encodeURIComponent('Clase cancelada / festivo');
+  const cuerpo = encodeURIComponent(document.getElementById('notif-msg').value);
+  window.open(`mailto:${_notifClase.emails.join(',')}?subject=${asunto}&body=${cuerpo}`);
+}
+function enviarWA() {
+  if (!_notifClase.telefonos?.length) { toast('Sin teléfonos','warn'); return; }
+  const msg = encodeURIComponent(document.getElementById('notif-msg').value);
+  // Abre WhatsApp para el primer teléfono (limitación de wa.me)
+  window.open(`https://wa.me/${_notifClase.telefonos[0]}?text=${msg}`);
+  if (_notifClase.telefonos.length > 1) toast(`Repite para los ${_notifClase.telefonos.length-1} teléfonos restantes`,'warn');
+}
+
 async function cargar(){
   showLoading('lista-clases');
   const{data,error}=await _sb.from('clases').select('*, clase_ejercicios(*, ejercicios(nombre,categoria)), clase_asistencia(*, alumnos(nombre))').eq('escuela_id',Store.escuelaId).order('fecha',{ascending:false});
@@ -550,6 +651,9 @@ async function init(){
   renderHeader({titulo:'Escuela de Pádel',subtitulo:'Clases',icono:'icons/clases.png',botonDerecho:null});
   renderNav('clases');
   await initStore();
+  const cfgClase = await getConfigMultiple(['tipos_clase']);
+  if (cfgClase.tipos_clase && cfgClase.tipos_clase.length) _cfgTiposClase = cfgClase.tipos_clase;
+  fillTipoClaseSelect('Grupo');
   _grupos=await getGrupos();
   const sg=document.getElementById('cl-grupo'),sf=document.getElementById('filtro-grupo');
   _grupos.forEach(g=>{sg.innerHTML+=`<option value="${g.id}">${g.nombre}</option>`;sf.innerHTML+=`<option value="${g.id}">${g.nombre}</option>`});

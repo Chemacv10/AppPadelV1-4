@@ -216,7 +216,7 @@ function renderLista(alumnos) {
         </div>
         <div class="chev" id="chev-${a.id}">▼</div>
       </div>
-      <div class="exp" id="exp-${a.id}" style="padding:8px 0 4px">
+      <div class="exp" id="exp-${a.id}">
         <div class="dl">Teléfono</div><div class="dv">${a.telefono || '—'}</div>
         <div class="dl">Email</div><div class="dv">${a.email || '—'}</div>
         <div class="dl">Nacimiento</div><div class="dv">${a.fecha_nacimiento ? formatFechaNac(a.fecha_nacimiento)+(edad?' ('+edad+' años)':''): '—'}</div>

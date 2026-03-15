@@ -198,7 +198,7 @@ function renderLista(alumnos) {
   el.innerHTML = alumnos.map(a => {
     const grupo = _grupos.find(g => g.id === a.grupo_id);
     const avatarEl = a.foto_url
-      ? `<img class="av-foto" src="${a.foto_url}" alt="${a.nombre}" onerror="this.outerHTML='${avatarHTML(a.nombre).replace(/'/g,"\'")}'">` 
+      ? `<img class="av-foto" src="${a.foto_url}" alt="${a.nombre}" onerror="this.style.display='none'">`
       : avatarHTML(a.nombre);
     const edad = a.fecha_nacimiento ? calcEdad(a.fecha_nacimiento) : null;
 
@@ -223,7 +223,7 @@ function renderLista(alumnos) {
         ${grupo              ? `<div class="dl">Grupo</div><div class="dv">${grupo.nombre}</div>` : ''}
         <div class="abtns">
           <button class="abtn" onclick="window.location.href='cobros.html?alumno_id=${a.id}'">💰 Cobros</button>
-          <button class="abtn prim" onclick="abrirEditar(${JSON.stringify(a).replace(/"/g,'&quot;')})">✏️ Editar</button>
+          <button class="abtn prim" onclick="abrirEditarId('${a.id}')">✏️ Editar</button>
           <button class="abtn dang" onclick="confirmarEliminar('${a.id}','${a.nombre.replace(/'/g,"\\'")}')">🗑</button>
         </div>
       </div>
@@ -340,6 +340,11 @@ function abrirNuevo() {
   ocultarFotoPreview();
   fillNivelSelect('Principiante');
   openSheet('sh-alumno');
+}
+
+function abrirEditarId(id) {
+  const a = _alumnos.find(x => x.id === id);
+  if (a) abrirEditar(a);
 }
 
 function abrirEditar(a) {

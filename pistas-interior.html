@@ -149,7 +149,7 @@ function bloquesDelDia(dia) {
 function renderTabs() {
   const el = document.getElementById('dias-tabs');
   el.innerHTML = DIAS_C.map((d,i) => {
-    const bloques = (_semana.bloques_pista||[]).filter(b=>b.dia===i);
+    const bloques = (_semana.bloques_pista||[]).filter(b=>Number(b.dia)===i);
     const dot = bloques.length ? '<div class="dot"></div>' : '';
     const fecha = fechaDia(i);
     return `<div class="dia-tab ${_diaActivo===i?'active':''}" onclick="selDia(${i})">
@@ -167,7 +167,7 @@ function renderPistas() {
   for (let p=1; p<=np; p++) {
     const nombre = `Pista ${p}`;
     const bloques = (_semana.bloques_pista||[])
-      .filter(b => b.pista===nombre && b.dia===_diaActivo)
+      .filter(b => b.pista===nombre && Number(b.dia)===_diaActivo)
       .sort((a,b)=>(a.hora_inicio||'').localeCompare(b.hora_inicio||''));
     const color = ['azul','verde','naranja','morado'][p-1]||'gris';
     const bloquesHTML = bloques.map(b => {

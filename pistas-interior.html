@@ -38,7 +38,7 @@
 <body>
 <div class="page">
   <div id="header-container"></div>
-  <div class="sep"></div>
+  <nav id="nav-container"></nav>
 
   <div class="dias-tabs" id="dias-tabs"></div>
 
@@ -312,6 +312,7 @@ async function init() {
     botonDerecho: 'back',
     onBack:       'pistas.html',
   });
+  renderNav('pistas');
 
   renderTabs();
   renderPistas();
